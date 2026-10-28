@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoBiz Saudi - نظام إدارة الورش والمحاسبة</title>
+    <title>AutoBiz Saudi - أوتو بزنس السعودية</title>
     <style>
         :root {
             --primary: #1e3a8a;
@@ -18,6 +18,8 @@
         body { background-color: var(--bg); color: var(--text); padding: 20px; }
         .container { max-width: 1200px; margin: 0 auto; }
         header { background: var(--primary); color: white; padding: 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .lang-btn { background: white; color: var(--primary); border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .tab-btn { background: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; color: var(--primary); transition: 0.3s; }
         .tab-btn.active, .tab-btn:hover { background: var(--secondary); color: white; }
@@ -49,51 +51,54 @@
 
 <div class="container">
     <header>
-        <h1>AutoBiz Saudi - نظام الإدارة المحاسبية للورش</h1>
-        <span id="currentDate"></span>
+        <h1 id="appTitle">AutoBiz Saudi - نظام الإدارة المحاسبية للورش</h1>
+        <div class="header-actions">
+            <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">English</button>
+            <span id="currentDate"></span>
+        </div>
     </header>
 
     <div class="tabs no-print">
-        <button class="tab-btn active" onclick="switchTab('dashboard')">لوحة التحكم</button>
-        <button class="tab-btn" onclick="switchTab('invoices')">المبيعات والفواتير</button>
-        <button class="tab-btn" onclick="switchTab('purchases')">مشتريات قطع الغيار</button>
-        <button class="tab-btn" onclick="switchTab('expenses')">المصروفات التشغيلية والإدارية</button>
-        <button class="tab-btn" onclick="switchTab('reports')">التقارير المالية والفنيين</button>
+        <button class="tab-btn active" onclick="switchTab('dashboard', this)" id="navDash">لوحة التحكم</button>
+        <button class="tab-btn" onclick="switchTab('invoices', this)" id="navInv">المبيعات والفواتير</button>
+        <button class="tab-btn" onclick="switchTab('purchases', this)" id="navPur">مشتريات قطع الغيار</button>
+        <button class="tab-btn" onclick="switchTab('expenses', this)" id="navExp">المصروفات التشغيلية</button>
+        <button class="tab-btn" onclick="switchTab('reports', this)" id="navRep">التقارير والفنيين</button>
     </div>
 
-    <!-- 1. لوحة التحكم -->
+    <!-- 1. Dashboard -->
     <div id="dashboard" class="section active">
-        <h2>لوحة المؤشرات العامة</h2>
+        <h2 id="hDash">لوحة المؤشرات العامة</h2>
         <div class="stats-grid">
             <div class="stat-card">
-                <h3>إجمالي المبيعات (بدون ضريبة)</h3>
+                <h3 id="lblStatSales">إجمالي المبيعات (بدون ضريبة)</h3>
                 <p id="statSales">0.00 ر.س</p>
             </div>
             <div class="stat-card" style="border-color: var(--success);">
-                <h3>إجمالي ضريبة القيمة المصّحصلة</h3>
+                <h3 id="lblStatTax">إجمالي ضريبة القيمة المصّحصلة</h3>
                 <p id="statTax">0.00 ر.س</p>
             </div>
             <div class="stat-card" style="border-color: var(--warning);">
-                <h3>مشتريات قطع الغيار</h3>
+                <h3 id="lblStatPur">مشتريات قطع الغيار</h3>
                 <p id="statPurchases">0.00 ر.س</p>
             </div>
             <div class="stat-card" style="border-color: var(--danger);">
-                <h3>إجمالي المصروفات</h3>
+                <h3 id="lblStatExp">إجمالي المصروفات</h3>
                 <p id="statExpenses">0.00 ر.س</p>
             </div>
         </div>
     </div>
 
-    <!-- 2. المبيعات والفواتير -->
+    <!-- 2. Invoices -->
     <div id="invoices" class="section">
-        <h2>إدارة المبيعات والفواتير (مع حساب الضريبة والفنيين)</h2>
+        <h2 id="hInv">إدارة المبيعات والفواتير</h2>
         <div class="form-grid no-print">
             <div class="form-group">
-                <label>اسم العميل / رقم السيارة</label>
+                <label id="lblClient">اسم العميل / رقم السيارة</label>
                 <input type="text" id="invClient" placeholder="مثال: تويوتا - 1234 ABC">
             </div>
             <div class="form-group">
-                <label>اسم الفني المسؤول</label>
+                <label id="lblTech">اسم الفني المسؤول</label>
                 <select id="invTechnician">
                     <option value="أحمد محمد">أحمد محمد</option>
                     <option value="خالد علي">خالد علي</option>
@@ -101,79 +106,77 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>المبلغ الإضافي (بدون ضريبة)</label>
+                <label id="lblAmount">المبلغ الإضافي (بدون ضريبة)</label>
                 <input type="number" id="invAmount" placeholder="0.00">
             </div>
             <div class="form-group">
-                <label>نسبة الضريبة (15%)</label>
+                <label id="lblTaxRate">نسبة الضريبة (15%)</label>
                 <select id="invTaxRate">
                     <option value="0.15">15% ضريبة القيمة المضافة</option>
                     <option value="0">معفي / صفر</option>
                 </select>
             </div>
         </div>
-        <button class="btn no-print" onclick="addInvoice()">حفظ الفاتورة وإصدار السند</button>
-        <button class="btn btn-print no-print" onclick="window.print()">معاينة وطباعة</button>
+        <button class="btn no-print" onclick="addInvoice()" id="btnSaveInv">حفظ الفاتورة وإصدار السند</button>
+        <button class="btn btn-print no-print" onclick="window.print()" id="btnPrint">معاينة وطباعة</button>
 
         <div class="printable" style="margin-top: 20px;">
-            <h3>سجل الفواتير المحصلة</h3>
+            <h3 id="hInvLog">سجل الفواتير المحصلة</h3>
             <table>
                 <thead>
                     <tr>
-                        <th>رقم الفاتورة</th>
-                        <th>التاريخ</th>
-                        <th>العميل</th>
-                        <th>الفني</th>
-                        <th>المبلغ الصافي</th>
-                        <th>الضريبة المحصلة (15%)</th>
-                        <th>الإجمالي شامل الضريبة</th>
+                        <th id="thInvId">رقم الفاتورة</th>
+                        <th id="thDate">التاريخ</th>
+                        <th id="thClientName">العميل</th>
+                        <th id="thTechName">الفني</th>
+                        <th id="thNet">المبلغ الصافي</th>
+                        <th id="thTax">الضريبة (15%)</th>
+                        <th id="thTotal">الإجمالي شامل الضريبة</th>
                     </tr>
                 </thead>
-                <tbody id="invoicesTableBody">
-                    <!-- سيتم تعبئتها ديناميكياً -->
-                </tbody>
+                <tbody id="invoicesTableBody"></tbody>
             </table>
         </div>
     </div>
 
-    <!-- 3. مشتريات قطع الغيار -->
+    <!-- 3. Purchases -->
     <div id="purchases" class="section">
-        <h2>إدارة مشتريات قطع الغيار والمخزون</h2>
+        <h2 id="hPur">إدارة مشتريات قطع الغيار والمخزون</h2>
         <div class="form-grid">
             <div class="form-group">
-                <label>اسم القطعة / الصنف</label>
+                <label id="lblPartName">اسم القطعة / الصنف</label>
                 <input type="text" id="partName" placeholder="مثال: فلاتر زيت، بطارية...">
             </div>
             <div class="form-group">
-                <label>المورد</label>
+                <label id="lblSupplier">المورد</label>
                 <input type="text" id="partSupplier" placeholder="اسم المورد">
             </div>
             <div class="form-group">
-                <label>التكلفة بالريال السعودي</label>
+                <label id="lblCost">التكلفة بالريال السعودي</label>
                 <input type="number" id="partCost" placeholder="0.00">
             </div>
         </div>
-        <button class="btn" onclick="addPurchase()">تسجيل مشتريات قطع الغيار</button>
+        <button class="btn" onclick="addPurchase()" id="btnSavePur">تسجيل مشتريات قطع الغيار</button>
 
         <table style="margin-top: 20px;">
             <thead>
                 <tr>
-                    <th>التاريخ</th>
-                    <th>اسم القطعة</th>
-                    <th>المورد</th>
-                    <th>التكلفة (ر.س)</th>
+                    <th id="thPurDate">التاريخ</th>
+                    <th id="thPart">اسم القطعة</th>
+                    <th id="thSupp">المورد</th>
+                    <th id="thCost">التكلفة</th>
                 </tr>
             </thead>
             <tbody id="purchasesTableBody"></tbody>
         </table>
     </div>
 
-    <!-- 4. المصروفات التشغيلية والإدارية -->
+    <!-- 4. Expenses -->
     <div id="expenses" class="section">
-        <h2>إدارة المصروفات التشغيلية والإدارية</h2>
+        <h2 id="hExp">إدارة المصروفات التشغيلية والإدارية</h2>
         <div class="form-grid">
             <div class="form-group">
-                <label>نوع المصروف</label>
+                <label id="lblExpCat">نوع المصروف</label>
                 <select id="expCategory">
                     <option value="تشغيلية (إيجار، كهرباء، صيانة)">تشغيلية (إيجار، كهرباء، صيانة)</option>
                     <option value="رواتب الموظفين والفنيين">رواتب الموظفين والفنيين</option>
@@ -183,78 +186,257 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>وصف المصروف / المستفيد</label>
+                <label id="lblExpDesc">وصف المصروف / المستفيد</label>
                 <input type="text" id="expDesc" placeholder="التفاصيل...">
             </div>
             <div class="form-group">
-                <label>المبلغ (ر.س)</label>
+                <label id="lblExpAmount">المبلغ</label>
                 <input type="number" id="expAmount" placeholder="0.00">
             </div>
         </div>
-        <button class="btn" onclick="addExpense()">حفظ المصروف</button>
+        <button class="btn" onclick="addExpense()" id="btnSaveExp">حفظ المصروف</button>
 
         <table style="margin-top: 20px;">
             <thead>
                 <tr>
-                    <th>التاريخ</th>
-                    <th>البند</th>
-                    <th>الوصف والمستفيد</th>
-                    <th>المبلغ (ر.س)</th>
+                    <th id="thExpDate">التاريخ</th>
+                    <th id="thExpCat">البند</th>
+                    <th id="thExpDesc">الوصف والمستفيد</th>
+                    <th id="thExpAmount">المبلغ</th>
                 </tr>
             </thead>
             <tbody id="expensesTableBody"></tbody>
         </table>
     </div>
 
-    <!-- 5. التقارير المالية وإيرادات الفنيين -->
+    <!-- 5. Reports -->
     <div id="reports" class="section">
-        <h2>التقارير المالية وتقرير إيرادات الفنيين الشهري</h2>
+        <h2 id="hRep">التقارير المالية وتقرير إيرادات الفنيين الشهري</h2>
         
-        <h3>أولاً: إيرادات ومبيعات كل فني</h3>
+        <h3 id="hTechRep">أولاً: إيرادات ومبيعات كل فني</h3>
         <table>
             <thead>
                 <tr>
-                    <th>اسم الفني</th>
-                    <th>عدد الفواتير المنجزة</th>
-                    <th>إجمالي الإيرادات المحصلة (شامل الضريبة)</th>
+                    <th id="thTechRepName">اسم الفني</th>
+                    <th id="thTechRepCount">عدد الفواتير المنجزة</th>
+                    <th id="thTechRepTotal">إجمالي الإيرادات المحصلة (شامل الضريبة)</th>
                 </tr>
             </thead>
-            <tbody id="technicianReportBody">
-                <!-- تعبئة تلقائية -->
-            </tbody>
+            <tbody id="technicianReportBody"></tbody>
         </table>
 
-        <h3 style="margin-top: 30px;">ثانياً: الملخص المالي العام والشهرية</h3>
+        <h3 style="margin-top: 30px;" id="hFinSum">ثانياً: الملخص المالي العام</h3>
         <table>
             <thead>
                 <tr>
-                    <th>البند المالي</th>
-                    <th>القيمة الإجمالية (ر.س)</th>
+                    <th id="thFinItem">البند المالي</th>
+                    <th id="thFinVal">القيمة الإجمالية</th>
                 </tr>
             </thead>
-            <tbody id="financialSummaryBody">
-                <!-- تعبئة تلقائية -->
-            </tbody>
+            <tbody id="financialSummaryBody"></tbody>
         </table>
-        <button class="btn btn-print no-print" style="margin-top: 15px;" onclick="window.print()">طباعة التقارير المالية</button>
+        <button class="btn btn-print no-print" style="margin-top: 15px;" onclick="window.print()" id="btnPrintRep">طباعة التقارير المالية</button>
     </div>
 
 </div>
 
 <script>
-    let data = {
-        invoices: [],
-        purchases: [],
-        expenses: []
+    let currentLang = 'ar';
+    let data = { invoices: [], purchases: [], expenses: [] };
+
+    const dict = {
+        ar: {
+            langBtn: "English",
+            appTitle: "AutoBiz Saudi - نظام الإدارة المحاسبية للورش",
+            navDash: "لوحة التحكم",
+            navInv: "المبيعات والفواتير",
+            navPur: "مشتريات قطع الغيار",
+            navExp: "المصروفات التشغيلية",
+            navRep: "التقارير والفنيين",
+            hDash: "لوحة المؤشرات العامة",
+            lblStatSales: "إجمالي المبيعات (بدون ضريبة)",
+            lblStatTax: "إجمالي ضريبة القيمة المصّحصلة",
+            lblStatPur: "مشتريات قطع الغيار",
+            lblStatExp: "إجمالي المصروفات",
+            hInv: "إدارة المبيعات والفواتير",
+            lblClient: "اسم العميل / رقم السيارة",
+            lblTech: "اسم الفني المسؤول",
+            lblAmount: "المبلغ الإضافي (بدون ضريبة)",
+            lblTaxRate: "نسبة الضريبة (15%)",
+            btnSaveInv: "حفظ الفاتورة وإصدار السند",
+            btnPrint: "معاينة وطباعة",
+            hInvLog: "سجل الفواتير المحصلة",
+            thInvId: "رقم الفاتورة",
+            thDate: "التاريخ",
+            thClientName: "العميل",
+            thTechName: "الفني",
+            thNet: "المبلغ الصافي",
+            thTax: "الضريبة (15%)",
+            thTotal: "الإجمالي شامل الضريبة",
+            hPur: "إدارة مشتريات قطع الغيار والمخزون",
+            lblPartName: "اسم القطعة / الصنف",
+            lblSupplier: "المورد",
+            lblCost: "التكلفة بالريال السعودي",
+            btnSavePur: "تسجيل مشتريات قطع الغيار",
+            thPurDate: "التاريخ",
+            thPart: "اسم القطعة",
+            thSupp: "المورد",
+            thCost: "التكلفة",
+            hExp: "إدارة المصروفات التشغيلية والإدارية",
+            lblExpCat: "نوع المصروف",
+            lblExpDesc: "وصف المصروف / المستفيد",
+            lblExpAmount: "المبلغ",
+            btnSaveExp: "حفظ المصروف",
+            thExpDate: "التاريخ",
+            thExpCat: "البند",
+            thExpDesc: "الوصف والمستفيد",
+            thExpAmount: "المبلغ",
+            hRep: "التقارير المالية وتقرير إيرادات الفنيين الشهري",
+            hTechRep: "أولاً: إيرادات ومبيعات كل فني",
+            thTechRepName: "اسم الفني",
+            thTechRepCount: "عدد الفواتير المنجزة",
+            thTechRepTotal: "إجمالي الإيرادات المحصلة (شامل الضريبة)",
+            hFinSum: "ثانياً: الملخص المالي العام",
+            thFinItem: "البند المالي",
+            thFinVal: "القيمة الإجمالية",
+            btnPrintRep: "طباعة التقارير المالية",
+            currency: "ر.س"
+        },
+        en: {
+            langBtn: "عربي",
+            appTitle: "AutoBiz Saudi - Workshop Accounting System",
+            navDash: "Dashboard",
+            navInv: "Sales & Invoices",
+            navPur: "Spare Parts Purchases",
+            navExp: "Operating Expenses",
+            navRep: "Reports & Technicians",
+            hDash: "General KPI Dashboard",
+            lblStatSales: "Total Sales (Excl. Tax)",
+            lblStatTax: "Total VAT Collected",
+            lblStatPur: "Spare Parts Purchases",
+            lblStatExp: "Total Expenses",
+            hInv: "Sales & Invoices Management",
+            lblClient: "Client Name / Vehicle No.",
+            lblTech: "Responsible Technician",
+            lblAmount: "Amount (Excl. Tax)",
+            lblTaxRate: "Tax Rate (15%)",
+            btnSaveInv: "Save Invoice & Issue Receipt",
+            btnPrint: "Preview & Print",
+            hInvLog: "Collected Invoices Log",
+            thInvId: "Invoice No.",
+            thDate: "Date",
+            thClientName: "Client",
+            thTechName: "Technician",
+            thNet: "Net Amount",
+            thTax: "VAT (15%)",
+            thTotal: "Total (Incl. VAT)",
+            hPur: "Spare Parts & Inventory Purchases",
+            lblPartName: "Part Name / Item",
+            lblSupplier: "Supplier",
+            lblCost: "Cost in SAR",
+            btnSavePur: "Record Spare Parts Purchase",
+            thPurDate: "Date",
+            thPart: "Part Name",
+            thSupp: "Supplier",
+            thCost: "Cost",
+            hExp: "Operating & Administrative Expenses",
+            lblExpCat: "Expense Category",
+            lblExpDesc: "Description / Beneficiary",
+            lblExpAmount: "Amount",
+            btnSaveExp: "Save Expense",
+            thExpDate: "Date",
+            thExpCat: "Category",
+            thExpDesc: "Description",
+            thExpAmount: "Amount",
+            hRep: "Financial Reports & Monthly Technician Revenue",
+            hTechRep: "1. Revenue & Sales per Technician",
+            thTechRepName: "Technician Name",
+            thTechRepCount: "Completed Invoices",
+            thTechRepTotal: "Total Revenue (Incl. VAT)",
+            hFinSum: "2. General Financial Summary",
+            thFinItem: "Financial Item",
+            thFinVal: "Total Value",
+            btnPrintRep: "Print Financial Reports",
+            currency: "SAR"
+        }
     };
 
-    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('ar-SA');
+    document.getElementById('currentDate').innerText = new Date().toLocaleDateString();
 
-    function switchTab(tabId) {
+    function toggleLanguage() {
+        currentLang = currentLang === 'ar' ? 'en' : 'ar';
+        document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = currentLang;
+        
+        const t = dict[currentLang];
+        document.getElementById('langBtn').innerText = t.langBtn;
+        document.getElementById('appTitle').innerText = t.appTitle;
+        document.getElementById('navDash').innerText = t.navDash;
+        document.getElementById('navInv').innerText = t.navInv;
+        document.getElementById('navPur').innerText = t.navPur;
+        document.getElementById('navExp').innerText = t.navExp;
+        document.getElementById('navRep').innerText = t.navRep;
+
+        document.getElementById('hDash').innerText = t.hDash;
+        document.getElementById('lblStatSales').innerText = t.lblStatSales;
+        document.getElementById('lblStatTax').innerText = t.lblStatTax;
+        document.getElementById('lblStatPur').innerText = t.lblStatPur;
+        document.getElementById('lblStatExp').innerText = t.lblStatExp;
+
+        document.getElementById('hInv').innerText = t.hInv;
+        document.getElementById('lblClient').innerText = t.lblClient;
+        document.getElementById('lblTech').innerText = t.lblTech;
+        document.getElementById('lblAmount').innerText = t.lblAmount;
+        document.getElementById('lblTaxRate').innerText = t.lblTaxRate;
+        document.getElementById('btnSaveInv').innerText = t.btnSaveInv;
+        document.getElementById('btnPrint').innerText = t.btnPrint;
+        document.getElementById('hInvLog').innerText = t.hInvLog;
+        document.getElementById('thInvId').innerText = t.thInvId;
+        document.getElementById('thDate').innerText = t.thDate;
+        document.getElementById('thClientName').innerText = t.thClientName;
+        document.getElementById('thTechName').innerText = t.thTechName;
+        document.getElementById('thNet').innerText = t.thNet;
+        document.getElementById('thTax').innerText = t.thTax;
+        document.getElementById('thTotal').innerText = t.thTotal;
+
+        document.getElementById('hPur').innerText = t.hPur;
+        document.getElementById('lblPartName').innerText = t.lblPartName;
+        document.getElementById('lblSupplier').innerText = t.lblSupplier;
+        document.getElementById('lblCost').innerText = t.lblCost;
+        document.getElementById('btnSavePur').innerText = t.btnSavePur;
+        document.getElementById('thPurDate').innerText = t.thPurDate;
+        document.getElementById('thPart').innerText = t.thPart;
+        document.getElementById('thSupp').innerText = t.thSupp;
+        document.getElementById('thCost').innerText = t.thCost;
+
+        document.getElementById('hExp').innerText = t.hExp;
+        document.getElementById('lblExpCat').innerText = t.lblExpCat;
+        document.getElementById('lblExpDesc').innerText = t.lblExpDesc;
+        document.getElementById('lblExpAmount').innerText = t.lblExpAmount;
+        document.getElementById('btnSaveExp').innerText = t.btnSaveExp;
+        document.getElementById('thExpDate').innerText = t.thExpDate;
+        document.getElementById('thExpCat').innerText = t.thExpCat;
+        document.getElementById('thExpDesc').innerText = t.thExpDesc;
+        document.getElementById('thExpAmount').innerText = t.thExpAmount;
+
+        document.getElementById('hRep').innerText = t.hRep;
+        document.getElementById('hTechRep').innerText = t.hTechRep;
+        document.getElementById('thTechRepName').innerText = t.thTechRepName;
+        document.getElementById('thTechRepCount').innerText = t.thTechRepCount;
+        document.getElementById('thTechRepTotal').innerText = t.thTechRepTotal;
+        document.getElementById('hFinSum').innerText = t.hFinSum;
+        document.getElementById('thFinItem').innerText = t.thFinItem;
+        document.getElementById('thFinVal').innerText = t.thFinVal;
+        document.getElementById('btnPrintRep').innerText = t.btnPrintRep;
+
+        updateDashboard();
+    }
+
+    function switchTab(tabId, el) {
         document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
-        event.currentTarget.classList.add('active');
+        el.classList.add('active');
         if(tabId === 'reports') updateReports();
     }
 
@@ -265,7 +447,7 @@
         const taxRate = parseFloat(document.getElementById('invTaxRate').value);
 
         if(!client || amount <= 0) {
-            alert('الرجاء إدخال اسم العميل والمبلغ بشكل صحيح');
+            alert(currentLang === 'ar' ? 'الرجاء إدخال اسم العميل والمبلغ بشكل صحيح' : 'Please enter valid client name and amount');
             return;
         }
 
@@ -274,7 +456,7 @@
 
         data.invoices.push({
             id: 'INV-' + (1000 + data.invoices.length + 1),
-            date: new Date().toLocaleDateString('ar-SA'),
+            date: new Date().toLocaleDateString(),
             client,
             technician,
             amount,
@@ -285,133 +467,9 @@
         document.getElementById('invClient').value = '';
         document.getElementById('invAmount').value = '';
         updateDashboard();
-        alert('تم حفظ الفاتورة بنجاح!');
+        alert(currentLang === 'ar' ? 'تم حفظ الفاتورة بنجاح!' : 'Invoice saved successfully!');
     }
 
     function addPurchase() {
         const name = document.getElementById('partName').value;
         const supplier = document.getElementById('partSupplier').value;
-        const cost = parseFloat(document.getElementById('partCost').value) || 0;
-
-        if(!name || cost <= 0) {
-            alert('الرجاء إدخال بيانات القطعة والتكلفة');
-            return;
-        }
-
-        data.purchases.push({
-            date: new Date().toLocaleDateString('ar-SA'),
-            name,
-            supplier,
-            cost
-        });
-
-        document.getElementById('partName').value = '';
-        document.getElementById('partSupplier').value = '';
-        document.getElementById('partCost').value = '';
-        updateDashboard();
-        alert('تم تسجيل مشتريات قطع الغيار بنجاح!');
-    }
-
-    function addExpense() {
-        const category = document.getElementById('expCategory').value;
-        const desc = document.getElementById('expDesc').value;
-        const amount = parseFloat(document.getElementById('expAmount').value) || 0;
-
-        if(amount <= 0) {
-            alert('الرجاء إدخال مبلغ المصروف');
-            return;
-        }
-
-        data.expenses.push({
-            date: new Date().toLocaleDateString('ar-SA'),
-            category,
-            desc,
-            amount
-        });
-
-        document.getElementById('expDesc').value = '';
-        document.getElementById('expAmount').value = '';
-        updateDashboard();
-        alert('تم حفظ المصروف بنجاح!');
-    }
-
-    function updateDashboard() {
-        let totalSales = 0;
-        let totalTax = 0;
-        let invRows = '';
-
-        data.invoices.forEach(inv => {
-            totalSales += inv.amount;
-            totalTax += inv.tax;
-            invRows += `<tr>
-                <td>${inv.id}</td>
-                <td>${inv.date}</td>
-                <td>${inv.client}</td>
-                <td>${inv.technician}</td>
-                <td>${inv.amount.toFixed(2)}</td>
-                <td>${inv.tax.toFixed(2)}</td>
-                <td>${inv.total.toFixed(2)}</td>
-            </tr>`;
-        });
-        document.getElementById('invoicesTableBody').innerHTML = invRows;
-        document.getElementById('statSales').innerText = totalSales.toFixed(2) + ' ر.س';
-        document.getElementById('statTax').innerText = totalTax.toFixed(2) + ' ر.س';
-
-        let totalPurchases = 0;
-        let purRows = '';
-        data.purchases.forEach(p => {
-            totalPurchases += p.cost;
-            purRows += `<tr><td>${p.date}</td><td>${p.name}</td><td>${p.supplier}</td><td>${p.cost.toFixed(2)}</td></tr>`;
-        });
-        document.getElementById('purchasesTableBody').innerHTML = purRows;
-        document.getElementById('statPurchases').innerText = totalPurchases.toFixed(2) + ' ر.س';
-
-        let totalExpenses = 0;
-        let expRows = '';
-        data.expenses.forEach(e => {
-            totalExpenses += e.amount;
-            expRows += `<tr><td>${e.date}</td><td>${e.category}</td><td>${e.desc}</td><td>${e.amount.toFixed(2)}</td></tr>`;
-        });
-        document.getElementById('expensesTableBody').innerHTML = expRows;
-        document.getElementById('statExpenses').innerText = totalExpenses.toFixed(2) + ' ر.س';
-    }
-
-    function updateReports() {
-        let techMap = {};
-        data.invoices.forEach(inv => {
-            if(!techMap[inv.technician]) {
-                techMap[inv.technician] = { count: 0, total: 0 };
-            }
-            techMap[inv.technician].count += 1;
-            techMap[inv.technician].total += inv.total;
-        });
-
-        let techRows = '';
-        for(let tech in techMap) {
-            techRows += `<tr>
-                <td>${tech}</td>
-                <td>${techMap[tech].count}</td>
-                <td>${techMap[tech].total.toFixed(2)} ر.س</td>
-            </tr>`;
-        }
-        document.getElementById('technicianReportBody').innerHTML = techRows || '<tr><td colspan="3">لا توجد بيانات مسجلة بعد</td></tr>';
-
-        let totalSales = data.invoices.reduce((sum, i) => sum + i.amount, 0);
-        let totalTax = data.invoices.reduce((sum, i) => sum + i.tax, 0);
-        let totalPurchases = data.purchases.reduce((sum, p) => sum + p.cost, 0);
-        let totalExpenses = data.expenses.reduce((sum, e) => sum + e.amount, 0);
-        let netProfit = totalSales - totalPurchases - totalExpenses;
-
-        let summaryRows = `
-            <tr><td>إجمالي المبيعات (صافي)</td><td>${totalSales.toFixed(2)} ر.س</td></tr>
-            <tr><td>إجمالي ضريبة القيمة المحصلة</td><td>${totalTax.toFixed(2)} ر.س</td></tr>
-            <tr><td>إجمالي مشتريات قطع الغيار</td><td>${totalPurchases.toFixed(2)} ر.س</td></tr>
-            <tr><td>إجمالي المصروفات التشغيلية والإدارية</td><td>${totalExpenses.toFixed(2)} ر.س</td></tr>
-            <tr style="font-weight: bold; background: #e2e8f0;"><td>صافي الربح التقديري</td><td>${netProfit.toFixed(2)} ر.س</td></tr>
-        `;
-        document.getElementById('financialSummaryBody').innerHTML = summaryRows;
-    }
-</script>
-
-</body>
-</html>
