@@ -106,7 +106,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <label id="lblAmount">المبلغ الإضافي (بدون ضريبة)</label>
+                <label id="lblAmount">المبلغ (بدون ضريبة)</label>
                 <input type="number" id="invAmount" placeholder="0.00">
             </div>
             <div class="form-group">
@@ -242,7 +242,7 @@
 
 <script>
     let currentLang = 'ar';
-    let data = { invoices: [], purchases: [], expenses: [] };
+    let data = JSON.parse(localStorage.getItem('autobiz_data')) || { invoices: [], purchases: [], expenses: [] };
 
     const dict = {
         ar: {
@@ -261,4 +261,295 @@
             hInv: "إدارة المبيعات والفواتير",
             lblClient: "اسم العميل / رقم السيارة",
             lblTech: "اسم الفني المسؤول",
-            lblAmount: "المبلغ
+            lblAmount: "المبلغ (بدون ضريبة)",
+            lblTaxRate: "نسبة الضريبة (15%)",
+            btnSaveInv: "حفظ الفاتورة وإصدار السند",
+            btnPrint: "معاينة وطباعة",
+            hInvLog: "سجل الفواتير المحصلة",
+            thInvId: "رقم الفاتورة",
+            thDate: "التاريخ",
+            thClientName: "العميل",
+            thTechName: "الفني",
+            thNet: "المبلغ الصافي",
+            thTax: "الضريبة (15%)",
+            thTotal: "الإجمالي شامل الضريبة",
+            hPur: "إدارة مشتريات قطع الغيار والمخزون",
+            lblPartName: "اسم القطعة / الصنف",
+            lblSupplier: "المورد",
+            lblCost: "التكلفة بالريال السعودي",
+            btnSavePur: "تسجيل مشتريات قطع الغيار",
+            thPurDate: "التاريخ",
+            thPart: "اسم القطعة",
+            thSupp: "المورد",
+            thCost: "التكلفة",
+            hExp: "إدارة المصروفات التشغيلية والإدارية",
+            lblExpCat: "نوع المصروف",
+            lblExpDesc: "وصف المصروف / المستفيد",
+            lblExpAmount: "المبلغ",
+            btnSaveExp: "حفظ المصروف",
+            thExpDate: "التاريخ",
+            thExpCat: "البند",
+            thExpDesc: "الوصف والمستفيد",
+            thExpAmount: "المبلغ",
+            hRep: "التقارير المالية وتقرير إيرادات الفنيين الشهري",
+            hTechRep: "أولاً: إيرادات ومبيعات كل فني",
+            thTechRepName: "اسم الفني",
+            thTechRepCount: "عدد الفواتير المنجزة",
+            thTechRepTotal: "إجمالي الإيرادات المحصلة (شامل الضريبة)",
+            hFinSum: "ثانياً: الملخص المالي العام",
+            thFinItem: "البند المالي",
+            thFinVal: "القيمة الإجمالية",
+            btnPrintRep: "طباعة التقارير المالية"
+        },
+        en: {
+            langBtn: "العربية",
+            appTitle: "AutoBiz Saudi - Workshop Accounting System",
+            navDash: "Dashboard",
+            navInv: "Sales & Invoices",
+            navPur: "Spare Parts Purchases",
+            navExp: "Operational Expenses",
+            navRep: "Reports & Technicians",
+            hDash: "General Performance Metrics",
+            lblStatSales: "Total Sales (Excl. Tax)",
+            lblStatTax: "Total VAT Collected",
+            lblStatPur: "Spare Parts Purchases",
+            lblStatExp: "Total Expenses",
+            hInv: "Sales & Invoices Management",
+            lblClient: "Client Name / Vehicle No.",
+            lblTech: "Responsible Technician",
+            lblAmount: "Amount (Excl. Tax)",
+            lblTaxRate: "Tax Rate (15%)",
+            btnSaveInv: "Save Invoice & Issue Receipt",
+            btnPrint: "Preview & Print",
+            hInvLog: "Collected Invoices Log",
+            thInvId: "Invoice #",
+            thDate: "Date",
+            thClientName: "Client",
+            thTechName: "Technician",
+            thNet: "Net Amount",
+            thTax: "VAT (15%)",
+            thTotal: "Total (Incl. VAT)",
+            hPur: "Spare Parts & Inventory Purchases",
+            lblPartName: "Part / Item Name",
+            lblSupplier: "Supplier",
+            lblCost: "Cost in SAR",
+            btnSavePur: "Record Parts Purchase",
+            thPurDate: "Date",
+            thPart: "Part Name",
+            thSupp: "Supplier",
+            thCost: "Cost",
+            hExp: "Operational & Admin Expenses",
+            lblExpCat: "Expense Category",
+            lblExpDesc: "Description / Beneficiary",
+            lblExpAmount: "Amount",
+            btnSaveExp: "Save Expense",
+            thExpDate: "Date",
+            thExpCat: "Category",
+            thExpDesc: "Description & Beneficiary",
+            thExpAmount: "Amount",
+            hRep: "Financial Reports & Monthly Technician Revenue",
+            hTechRep: "I. Revenue & Sales per Technician",
+            thTechRepName: "Technician Name",
+            thTechRepCount: "Completed Invoices",
+            thTechRepTotal: "Total Revenue Collected (Incl. VAT)",
+            hFinSum: "II. General Financial Summary",
+            thFinItem: "Financial Item",
+            thFinVal: "Total Value",
+            btnPrintRep: "Print Financial Reports"
+        }
+    };
+
+    function updateDate() {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-SA' : 'en-US', options);
+    }
+
+    function toggleLanguage() {
+        currentLang = currentLang === 'ar' ? 'en' : 'ar';
+        document.documentElement.lang = currentLang;
+        document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+        
+        for (let key in dict[currentLang]) {
+            const el = document.getElementById(key);
+            if (el) el.innerText = dict[currentLang][key];
+        }
+        updateDate();
+    }
+
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function saveData() {
+        localStorage.setItem('autobiz_data', JSON.stringify(data));
+        updateUI();
+    }
+
+    function addInvoice() {
+        const client = document.getElementById('invClient').value;
+        const technician = document.getElementById('invTechnician').value;
+        const amount = parseFloat(document.getElementById('invAmount').value);
+        const taxRate = parseFloat(document.getElementById('invTaxRate').value);
+
+        if (!client || isNaN(amount) || amount <= 0) {
+            alert(currentLang === 'ar' ? 'الرجاء إدخال اسم العميل والمبلغ بشكل صحيح' : 'Please enter valid client name and amount.');
+            return;
+        }
+
+        const tax = amount * taxRate;
+        const total = amount + tax;
+        const newInv = {
+            id: 'INV-' + Math.floor(1000 + Math.random() * 9000),
+            date: new Date().toISOString().split('T')[0],
+            client,
+            technician,
+            net: amount,
+            tax,
+            total
+        };
+
+        data.invoices.push(newInv);
+        document.getElementById('invClient').value = '';
+        document.getElementById('invAmount').value = '';
+        saveData();
+        alert(currentLang === 'ar' ? 'تم حفظ الفاتورة بنجاح' : 'Invoice saved successfully');
+    }
+
+    function addPurchase() {
+        const name = document.getElementById('partName').value;
+        const supplier = document.getElementById('partSupplier').value;
+        const cost = parseFloat(document.getElementById('partCost').value);
+
+        if (!name || isNaN(cost) || cost <= 0) {
+            alert(currentLang === 'ar' ? 'الرجاء إدخال بيانات القطعة والتكلفة' : 'Please enter part details and cost.');
+            return;
+        }
+
+        data.purchases.push({
+            date: new Date().toISOString().split('T')[0],
+            name,
+            supplier,
+            cost
+        });
+
+        document.getElementById('partName').value = '';
+        document.getElementById('partSupplier').value = '';
+        document.getElementById('partCost').value = '';
+        saveData();
+    }
+
+    function addExpense() {
+        const category = document.getElementById('expCategory').value;
+        const desc = document.getElementById('expDesc').value;
+        const amount = parseFloat(document.getElementById('expAmount').value);
+
+        if (isNaN(amount) || amount <= 0) {
+            alert(currentLang === 'ar' ? 'الرجاء إدخال مبلغ المصروف' : 'Please enter expense amount.');
+            return;
+        }
+
+        data.expenses.push({
+            date: new Date().toISOString().split('T')[0],
+            category,
+            desc,
+            amount
+        });
+
+        document.getElementById('expDesc').value = '';
+        document.getElementById('expAmount').value = '';
+        saveData();
+    }
+
+    function updateUI() {
+        // Render Invoices
+        const invBody = document.getElementById('invoicesTableBody');
+        invBody.innerHTML = data.invoices.map(i => `
+            <tr>
+                <td>${i.id}</td>
+                <td>${i.date}</td>
+                <td>${i.client}</td>
+                <td>${i.technician}</td>
+                <td>${i.net.toFixed(2)} ر.س</td>
+                <td>${i.tax.toFixed(2)} ر.س</td>
+                <td><b>${i.total.toFixed(2)} ر.س</b></td>
+            </tr>
+        `).join('');
+
+        // Render Purchases
+        const purBody = document.getElementById('purchasesTableBody');
+        purBody.innerHTML = data.purchases.map(p => `
+            <tr>
+                <td>${p.date}</td>
+                <td>${p.name}</td>
+                <td>${p.supplier || '-'}</td>
+                <td>${p.cost.toFixed(2)} ر.س</td>
+            </tr>
+        `).join('');
+
+        // Render Expenses
+        const expBody = document.getElementById('expensesTableBody');
+        expBody.innerHTML = data.expenses.map(e => `
+            <tr>
+                <td>${e.date}</td>
+                <td>${e.category}</td>
+                <td>${e.desc || '-'}</td>
+                <td>${e.amount.toFixed(2)} ر.س</td>
+            </tr>
+        `).join('');
+
+        // Calculate Totals
+        const totalSales = data.invoices.reduce((sum, i) => sum + i.net, 0);
+        const totalTax = data.invoices.reduce((sum, i) => sum + i.tax, 0);
+        const totalPurchases = data.purchases.reduce((sum, p) => sum + p.cost, 0);
+        const totalExpenses = data.expenses.reduce((sum, e) => sum + e.amount, 0);
+
+        document.getElementById('statSales').innerText = totalSales.toFixed(2) + ' ر.س';
+        document.getElementById('statTax').innerText = totalTax.toFixed(2) + ' ر.س';
+        document.getElementById('statPurchases').innerText = totalPurchases.toFixed(2) + ' ر.س';
+        document.getElementById('statExpenses').innerText = totalExpenses.toFixed(2) + ' ر.س';
+
+        // Technician Report Breakdown
+        const techMap = {};
+        data.invoices.forEach(i => {
+            if (!techMap[i.technician]) {
+                techMap[i.technician] = { count: 0, total: 0 };
+            }
+            techMap[i.technician].count += 1;
+            techMap[i.technician].total += i.total;
+        });
+
+        const techBody = document.getElementById('technicianReportBody');
+        techBody.innerHTML = Object.keys(techMap).length === 0 ? 
+            `<tr><td colspan="3">${currentLang === 'ar' ? 'لا توجد فواتير مسجلة بعد' : 'No invoices recorded yet'}</td></tr>` :
+            Object.entries(techMap).map(([tech, stats]) => `
+                <tr>
+                    <td><b>${tech}</b></td>
+                    <td>${stats.count}</td>
+                    <td>${stats.total.toFixed(2)} ر.س</td>
+                </tr>
+            `).join('');
+
+        // Financial Summary Report
+        const netProfit = totalSales - totalPurchases - totalExpenses;
+        const finBody = document.getElementById('financialSummaryBody');
+        finBody.innerHTML = `
+            <tr><td>${currentLang === 'ar' ? 'إجمالي المبيعات (الصافيه)' : 'Total Net Sales'}</td><td>${totalSales.toFixed(2)} ر.س</td></tr>
+            <tr><td>${currentLang === 'ar' ? 'إجمالي ضريبة القيمة المضافة المحصلة' : 'Total VAT Collected'}</td><td>${totalTax.toFixed(2)} ر.س</td></tr>
+            <tr><td>${currentLang === 'ar' ? 'إجمالي مشتريات قطع الغيار' : 'Total Spare Parts Purchases'}</td><td>${totalPurchases.toFixed(2)} ر.س</td></tr>
+            <tr><td>${currentLang === 'ar' ? 'إجمالي المصروفات التشغيلية' : 'Total Operational Expenses'}</td><td>${totalExpenses.toFixed(2)} ر.س</td></tr>
+            <tr style="background: #f1f5f9; font-weight: bold;">
+                <td>${currentLang === 'ar' ? 'صافي أرباح الورشة التقديري' : 'Estimated Net Workshop Profit'}</td>
+                <td style="color: ${netProfit >= 0 ? 'var(--success)' : 'var(--danger)'};">${netProfit.toFixed(2)} ر.س</td>
+            </tr>
+        `;
+    }
+
+    updateDate();
+    updateUI();
+</script>
+
+</body>
+</html>
