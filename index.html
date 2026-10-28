@@ -3,653 +3,415 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoBiz Saudi - أوتو بزنس السعودية</title>
-    <!-- Web App Manifest for Installation -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkF1dG9CaXogU2F1ZGkiLAogICJzaG9ydF9uYW1lIjogIkF1dG9CaXoiLAogICJzdGFydF91cmwiOiAiLi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwZjE3MmEiLAogICJ0aGVtZV9jb2xvciI6ICIjM2I4MmY2Igp9">
+    <title>AutoBiz Saudi - نظام إدارة الورش والمحاسبة</title>
     <style>
         :root {
-            --bg: #0b0f19;
-            --panel: #151c2c;
-            --card: #1e293b;
-            --text: #f8fafc;
-            --muted: #94a3b8;
-            --border: #334155;
-            --accent: #3b82f6;
-            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
-            --radius: 12px;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            --bg: #f8fafc;
+            --text: #1e293b;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden; }
-
-        /* Sidebar */
-        .sidebar {
-            width: 270px;
-            background-color: var(--panel);
-            border-inline-end: 1px solid var(--border);
-            padding: 24px 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            flex-shrink: 0;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.2);
-        }
-
-        .brand-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-        .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
-        .brand span { display: block; font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 4px; }
-        
-        .lang-btn { 
-            background: var(--card); 
-            color: var(--accent); 
-            border: 1px solid var(--border); 
-            padding: 6px 14px; 
-            border-radius: 20px; 
-            cursor: pointer; 
-            font-weight: 700; 
-            font-size: 12px;
-            transition: all 0.2s ease;
-        }
-        .lang-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-        .nav-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-        .nav-item a { 
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px; 
-            color: var(--muted); 
-            text-decoration: none; 
-            border-radius: var(--radius); 
-            font-size: 14px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: all 0.2s ease;
-        }
-        .nav-item.active a, .nav-item a:hover { 
-            background: var(--accent-gradient); 
-            color: #ffffff; 
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-
-        /* Main Content */
-        .main-content { flex: 1; padding: 28px 36px; overflow-y: auto; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
-        .page-heading { font-size: 24px; font-weight: 700; }
-        
-        .btn-primary { 
-            background: var(--accent-gradient); 
-            color: white; 
-            border: none; 
-            padding: 12px 22px; 
-            border-radius: var(--radius); 
-            font-weight: 700; 
-            cursor: pointer; 
-            font-size: 14px;
-            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5); }
-        .btn-success { background-color: var(--success); color: white; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 12px; }
-        .btn-success:hover { opacity: 0.9; }
-
-        /* Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 32px; }
-        .stat-card { 
-            background-color: var(--panel); 
-            border: 1px solid var(--border); 
-            border-radius: var(--radius); 
-            padding: 22px; 
-            text-align: inherit;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: border-color 0.2s ease;
-        }
-        .stat-card:hover { border-color: var(--accent); }
-        .stat-card h4 { font-size: 13px; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-card .value { font-size: 24px; font-weight: 800; color: var(--text); }
-
-        /* Tables */
-        .table-panel { 
-            background-color: var(--panel); 
-            border: 1px solid var(--border); 
-            border-radius: var(--radius); 
-            padding: 24px; 
-            box-shadow: var(--shadow);
-            margin-bottom: 24px; 
-            overflow-x: auto;
-        }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: inherit; }
-        th, td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-        th { color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
-        tr:last-child td { border-bottom: none; }
-        tbody tr:hover { background-color: rgba(255, 255, 255, 0.02); }
-
-        .part-img { width: 48px; height: 48px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
-        .badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block; }
-        .badge.completed { background-color: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
-        .badge.pending { background-color: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
-
-        /* Modal Popup */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { 
-            background: var(--panel); 
-            padding: 28px; 
-            border-radius: var(--radius); 
-            width: 440px; 
-            border: 1px solid var(--border); 
-            max-height: 90vh; 
-            overflow-y: auto; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-        .modal-content h3 { margin-bottom: 18px; font-size: 18px; font-weight: 700; }
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
-        .form-group input, .form-group select { 
-            width: 100%; 
-            padding: 10px 14px; 
-            border-radius: 8px; 
-            border: 1px solid var(--border); 
-            background: var(--bg); 
-            color: var(--text); 
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
-        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
-        .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .btn-secondary:hover { background: var(--border); }
-
-        .section-page { display: none; }
-        .section-page.active { display: block; }
-
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; border-inline-end: none; border-bottom: 1px solid var(--border); }
-            .main-content { padding: 20px 16px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { background: var(--primary); color: white; padding: 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { background: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; color: var(--primary); transition: 0.3s; }
+        .tab-btn.active, .tab-btn:hover { background: var(--secondary); color: white; }
+        .section { display: none; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .section.active { display: block; }
+        h2 { margin-bottom: 15px; color: var(--primary); border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 5px; }
+        button.btn { background: var(--success); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button.btn-print { background: var(--secondary); margin-right: 10px; }
+        button.btn:hover { opacity: 0.9; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+        table th, table td { border: 1px solid #e2e8f0; padding: 10px; text-align: center; }
+        table th { background: #f1f5f9; color: var(--primary); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-right: 5px solid var(--secondary); }
+        .stat-card h3 { font-size: 14px; color: #64748b; margin-bottom: 5px; }
+        .stat-card p { font-size: 20px; font-weight: bold; color: var(--primary); }
+        @media print {
+            body * { visibility: hidden; }
+            .printable, .printable * { visibility: visible; }
+            .printable { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-        <div class="brand-header">
-            <div class="brand">AutoBiz Saudi <span id="sub-title">نظام إدارة الورش وقطع الغيار</span></div>
-            <button class="lang-btn" onclick="toggleLanguage()" id="lang-toggle-btn">English</button>
-        </div>
-        <ul class="nav-list">
-            <li class="nav-item active" onclick="switchTab('dashboard', this)"><a id="nav-dashboard">لوحة التحكم</a></li>
-            <li class="nav-item" onclick="switchTab('orders', this)"><a id="nav-orders">أوامر الإصلاح والفواتير</a></li>
-            <li class="nav-item" onclick="switchTab('parts', this)"><a id="nav-parts">قطع الغيار والمخزون</a></li>
-            <li class="nav-item" onclick="switchTab('debts', this)"><a id="nav-debts">ديون العملاء والسداد</a></li>
-        </ul>
-    </aside>
+<div class="container">
+    <header>
+        <h1>AutoBiz Saudi - نظام الإدارة المحاسبية للورش</h1>
+        <span id="currentDate"></span>
+    </header>
 
-    <!-- Main Workspace -->
-    <main class="main-content">
-        <!-- Top Stats Bar -->
+    <div class="tabs no-print">
+        <button class="tab-btn active" onclick="switchTab('dashboard')">لوحة التحكم</button>
+        <button class="tab-btn" onclick="switchTab('invoices')">المبيعات والفواتير</button>
+        <button class="tab-btn" onclick="switchTab('purchases')">مشتريات قطع الغيار</button>
+        <button class="tab-btn" onclick="switchTab('expenses')">المصروفات التشغيلية والإدارية</button>
+        <button class="tab-btn" onclick="switchTab('reports')">التقارير المالية والفنيين</button>
+    </div>
+
+    <!-- 1. لوحة التحكم -->
+    <div id="dashboard" class="section active">
+        <h2>لوحة المؤشرات العامة</h2>
         <div class="stats-grid">
             <div class="stat-card">
-                <h4 id="stat-services-label">إجمالي أوامر الإصلاح</h4>
-                <div class="value" id="stat-services-val">0</div>
+                <h3>إجمالي المبيعات (بدون ضريبة)</h3>
+                <p id="statSales">0.00 ر.س</p>
             </div>
-            <div class="stat-card">
-                <h4 id="stat-parts-label">إجمالي قطع الغيار</h4>
-                <div class="value" id="stat-parts-val">0</div>
+            <div class="stat-card" style="border-color: var(--success);">
+                <h3>إجمالي ضريبة القيمة المصّحصلة</h3>
+                <p id="statTax">0.00 ر.س</p>
             </div>
-            <div class="stat-card">
-                <h4 id="stat-debts-label">الديون المستحقة</h4>
-                <div class="value" id="stat-debts-val">0 ر.س</div>
+            <div class="stat-card" style="border-color: var(--warning);">
+                <h3>مشتريات قطع الغيار</h3>
+                <p id="statPurchases">0.00 ر.س</p>
             </div>
-            <div class="stat-card">
-                <h4 id="stat-sales-label">إجمالي المبيعات</h4>
-                <div class="value" id="stat-sales-val">0 ر.س</div>
+            <div class="stat-card" style="border-color: var(--danger);">
+                <h3>إجمالي المصروفات</h3>
+                <p id="statExpenses">0.00 ر.س</p>
             </div>
-        </div>
-
-        <!-- Repair Orders Section -->
-        <div id="sec-orders" class="section-page active">
-            <div class="top-bar">
-                <h1 class="page-heading" id="page-title-orders">أوامر الإصلاح والفواتير</h1>
-                <button class="btn-primary" onclick="openOrderModal()" id="btn-add-order">+ إضافة أمر إصلاح جديد</button>
-            </div>
-            <div class="table-panel">
-                <table>
-                    <thead>
-                        <tr>
-                            <th id="th-inv">رقم الفاتورة</th>
-                            <th id="th-client">اسم العميل</th>
-                            <th id="th-car">السيارة واللوحة</th>
-                            <th id="th-service">خدمة الإصلاح</th>
-                            <th id="th-technician">اسم الفني</th>
-                            <th id="th-amount">المبلغ الإجمالي</th>
-                            <th id="th-status">حالة السداد</th>
-                        </tr>
-                    </thead>
-                    <tbody id="orders-tbody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Spare Parts Section -->
-        <div id="sec-parts" class="section-page">
-            <div class="top-bar">
-                <h1 class="page-heading" id="page-title-parts">المخزون وقطع الغيار</h1>
-                <button class="btn-primary" onclick="openPartModal()" id="btn-add-part">+ إضافة قطعة غيار جديدة</button>
-            </div>
-            <div class="table-panel">
-                <table>
-                    <thead>
-                        <tr>
-                            <th id="th-part-img">الصورة</th>
-                            <th id="th-part-ar">اسم القطعة (بالعربية)</th>
-                            <th id="th-part-en">اسم القطعة (بالإنجليزية)</th>
-                            <th id="th-part-price">السعر</th>
-                            <th id="th-part-qty">الكمية المتاحة</th>
-                        </tr>
-                    </thead>
-                    <tbody id="parts-tbody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Debts & Settlements Section -->
-        <div id="sec-debts" class="section-page">
-            <div class="top-bar">
-                <h1 class="page-heading" id="page-title-debts">تفاصيل ديون العملاء والسداد</h1>
-            </div>
-            <div class="table-panel">
-                <table>
-                    <thead>
-                        <tr>
-                            <th id="th-debt-inv">رقم الفاتورة</th>
-                            <th id="th-debt-client">اسم العميل</th>
-                            <th id="th-debt-amount">المبلغ المستحق</th>
-                            <th id="th-debt-action">الإجراء</th>
-                        </tr>
-                    </thead>
-                    <tbody id="debts-tbody"></tbody>
-                </table>
-            </div>
-        </div>
-    </main>
-
-    <!-- Modal: New Order -->
-    <div class="modal" id="orderModal">
-        <div class="modal-content">
-            <h3 id="modal-order-heading">إضافة أمر إصلاح جديد</h3>
-            <form id="orderForm">
-                <div class="form-group"><label id="lbl-inv">رقم الفاتورة</label><input type="text" id="inputInv" required placeholder="#1005"></div>
-                <div class="form-group"><label id="lbl-client">اسم العميل</label><input type="text" id="inputClient" required></div>
-                <div class="form-group"><label id="lbl-car">السيارة واللوحة</label><input type="text" id="inputCar" required placeholder="تويوتا كامري 2022"></div>
-                <div class="form-group"><label id="lbl-service">خدمة الإصلاح</label><input type="text" id="inputService" required></div>
-                <div class="form-group"><label id="lbl-technician">اسم الفني المسؤول</label><input type="text" id="inputTechnician" required placeholder="محمد أحمد"></div>
-                <div class="form-group"><label id="lbl-amount">المبلغ الإجمالي</label><input type="number" id="inputAmount" required placeholder="350"></div>
-                <div class="form-group">
-                    <label id="lbl-status">حالة السداد</label>
-                    <select id="selectStatus">
-                        <option value="completed" id="opt-completed">مدفوع (مكتمل)</option>
-                        <option value="pending" id="opt-pending">آجل (دين)</option>
-                    </select>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-secondary" onclick="closeModal('orderModal')" id="btn-cancel-1">إلغاء</button>
-                    <button type="submit" class="btn-primary" id="btn-save-1">حفظ البيانات</button>
-                </div>
-            </form>
         </div>
     </div>
 
-    <!-- Modal: New Part -->
-    <div class="modal" id="partModal">
-        <div class="modal-content">
-            <h3 id="modal-part-heading">إضافة قطعة غيار جديدة</h3>
-            <form id="partForm">
-                <div class="form-group"><label id="lbl-part-ar">اسم القطعة (بالعربية)</label><input type="text" id="inputPartAr" required placeholder="فلتر زيت المحرك"></div>
-                <div class="form-group"><label id="lbl-part-en">اسم القطعة (بالإنجليزية)</label><input type="text" id="inputPartEn" required placeholder="Engine Oil Filter"></div>
-                <div class="form-group"><label id="lbl-part-price">السعر</label><input type="number" id="inputPartPrice" required placeholder="45"></div>
-                <div class="form-group"><label id="lbl-part-qty">الكمية المتاحة</label><input type="number" id="inputPartQty" required placeholder="20"></div>
-                <div class="form-group"><label id="lbl-part-img">رابط الصورة (URL)</label><input type="text" id="inputPartImg" placeholder="https://via.placeholder.com/100"></div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-secondary" onclick="closeModal('partModal')" id="btn-cancel-2">إلغاء</button>
-                    <button type="submit" class="btn-primary" id="btn-save-2">حفظ في المخزون</button>
-                </div>
-            </form>
+    <!-- 2. المبيعات والفواتير -->
+    <div id="invoices" class="section">
+        <h2>إدارة المبيعات والفواتير (مع حساب الضريبة والفنيين)</h2>
+        <div class="form-grid no-print">
+            <div class="form-group">
+                <label>اسم العميل / رقم السيارة</label>
+                <input type="text" id="invClient" placeholder="مثال: تويوتا - 1234 ABC">
+            </div>
+            <div class="form-group">
+                <label>اسم الفني المسؤول</label>
+                <select id="invTechnician">
+                    <option value="أحمد محمد">أحمد محمد</option>
+                    <option value="خالد علي">خالد علي</option>
+                    <option value="سعيد عمر">سعيد عمر</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>المبلغ الإضافي (بدون ضريبة)</label>
+                <input type="number" id="invAmount" placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label>نسبة الضريبة (15%)</label>
+                <select id="invTaxRate">
+                    <option value="0.15">15% ضريبة القيمة المضافة</option>
+                    <option value="0">معفي / صفر</option>
+                </select>
+            </div>
+        </div>
+        <button class="btn no-print" onclick="addInvoice()">حفظ الفاتورة وإصدار السند</button>
+        <button class="btn btn-print no-print" onclick="window.print()">معاينة وطباعة</button>
+
+        <div class="printable" style="margin-top: 20px;">
+            <h3>سجل الفواتير المحصلة</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>رقم الفاتورة</th>
+                        <th>التاريخ</th>
+                        <th>العميل</th>
+                        <th>الفني</th>
+                        <th>المبلغ الصافي</th>
+                        <th>الضريبة المحصلة (15%)</th>
+                        <th>الإجمالي شامل الضريبة</th>
+                    </tr>
+                </thead>
+                <tbody id="invoicesTableBody">
+                    <!-- سيتم تعبئتها ديناميكياً -->
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <script>
-        let currentLang = 'ar';
+    <!-- 3. مشتريات قطع الغيار -->
+    <div id="purchases" class="section">
+        <h2>إدارة مشتريات قطع الغيار والمخزون</h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>اسم القطعة / الصنف</label>
+                <input type="text" id="partName" placeholder="مثال: فلاتر زيت، بطارية...">
+            </div>
+            <div class="form-group">
+                <label>المورد</label>
+                <input type="text" id="partSupplier" placeholder="اسم المورد">
+            </div>
+            <div class="form-group">
+                <label>التكلفة بالريال السعودي</label>
+                <input type="number" id="partCost" placeholder="0.00">
+            </div>
+        </div>
+        <button class="btn" onclick="addPurchase()">تسجيل مشتريات قطع الغيار</button>
 
-        const i18n = {
-            ar: {
-                subTitle: "نظام إدارة الورش وقطع الغيار",
-                langBtn: "English",
-                navDashboard: "لوحة التحكم",
-                navOrders: "أوامر الإصلاح والفواتير",
-                navParts: "قطع الغيار والمخزون",
-                navDebts: "ديون العملاء والسداد",
-                statServices: "إجمالي أوامر الإصلاح",
-                statParts: "إجمالي قطع الغيار",
-                statDebts: "الديون المستحقة",
-                statSales: "إجمالي المبيعات",
-                pageTitleOrders: "أوامر الإصلاح والفواتير",
-                pageTitleParts: "المخزون وقطع الغيار",
-                pageTitleDebts: "تفاصيل ديون العملاء والسداد",
-                btnAddOrder: "+ إضافة أمر إصلاح جديد",
-                btnAddPart: "+ إضافة قطعة غيار جديدة",
-                thInv: "رقم الفاتورة",
-                thClient: "اسم العميل",
-                thCar: "السيارة واللوحة",
-                thService: "خدمة الإصلاح",
-                thTechnician: "اسم الفني",
-                thAmount: "المبلغ الإجمالي",
-                thStatus: "حالة السداد",
-                thPartImg: "الصورة",
-                thPartAr: "اسم القطعة (بالعربية)",
-                thPartEn: "اسم القطعة (بالإنجليزية)",
-                thPartPrice: "السعر",
-                thPartQty: "الكمية المتاحة",
-                thDebtInv: "رقم الفاتورة",
-                thDebtClient: "اسم العميل",
-                thDebtAmount: "المبلغ المستحق",
-                thDebtAction: "الإجراء",
-                statusCompleted: "مدفوع",
-                statusPending: "آجل",
-                btnPay: "تسديد الدين",
-                currency: "ر.س",
-                modalOrderHeading: "إضافة أمر إصلاح جديد",
-                modalPartHeading: "إضافة قطعة غيار جديدة",
-                lblInv: "رقم الفاتورة",
-                lblClient: "اسم العميل",
-                lblCar: "السيارة واللوحة",
-                lblService: "خدمة الإصلاح",
-                lblTechnician: "اسم الفني المسؤول",
-                lblAmount: "المبلغ الإجمالي",
-                lblStatus: "حالة السداد",
-                lblPartAr: "اسم القطعة (بالعربية)",
-                lblPartEn: "اسم القطعة (بالإنجليزية)",
-                lblPartPrice: "السعر",
-                lblPartQty: "الكمية المتاحة",
-                lblPartImg: "رابط الصورة (URL)",
-                optCompleted: "مدفوع (مكتمل)",
-                optPending: "آجل (دين)",
-                btnCancel: "إلغاء",
-                btnSaveOrder: "حفظ البيانات",
-                btnSavePart: "حفظ في المخزون"
-            },
-            en: {
-                subTitle: "Workshop & Auto Parts Management",
-                langBtn: "عربي",
-                navDashboard: "Dashboard",
-                navOrders: "Repair Orders & Invoices",
-                navParts: "Parts & Inventory",
-                navDebts: "Customer Debts",
-                statServices: "Total Repair Orders",
-                statParts: "Total Spare Parts",
-                statDebts: "Outstanding Debts",
-                statSales: "Total Sales",
-                pageTitleOrders: "Repair Orders & Invoices",
-                pageTitleParts: "Parts & Inventory",
-                pageTitleDebts: "Customer Debts & Payments",
-                btnAddOrder: "+ Add New Repair Order",
-                btnAddPart: "+ Add New Spare Part",
-                thInv: "Invoice No.",
-                thClient: "Client Name",
-                thCar: "Vehicle & Plate",
-                thService: "Repair Service",
-                thTechnician: "Technician",
-                thAmount: "Total Amount",
-                thStatus: "Payment Status",
-                thPartImg: "Image",
-                thPartAr: "Part Name (Arabic)",
-                thPartEn: "Part Name (English)",
-                thPartPrice: "Price",
-                thPartQty: "Available Quantity",
-                thDebtInv: "Invoice No.",
-                thDebtClient: "Client Name",
-                thDebtAmount: "Outstanding Amount",
-                thDebtAction: "Action",
-                statusCompleted: "Paid",
-                statusPending: "Pending",
-                btnPay: "Settle Debt",
-                currency: "SAR",
-                modalOrderHeading: "Add New Repair Order",
-                modalPartHeading: "Add New Spare Part",
-                lblInv: "Invoice Number",
-                lblClient: "Client Name",
-                lblCar: "Vehicle & Plate Number",
-                lblService: "Repair Service",
-                lblTechnician: "Technician Name",
-                lblAmount: "Total Amount",
-                lblStatus: "Payment Status",
-                lblPartAr: "Part Name (Arabic)",
-                lblPartEn: "Part Name (English)",
-                lblPartPrice: "Price",
-                lblPartQty: "Available Quantity",
-                lblPartImg: "Image URL",
-                optCompleted: "Paid (Completed)",
-                optPending: "Pending (Debt)",
-                btnCancel: "Cancel",
-                btnSaveOrder: "Save Data",
-                btnSavePart: "Save to Inventory"
-            }
-        };
+        <table style="margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th>التاريخ</th>
+                    <th>اسم القطعة</th>
+                    <th>المورد</th>
+                    <th>التكلفة (ر.س)</th>
+                </tr>
+            </thead>
+            <tbody id="purchasesTableBody"></tbody>
+        </table>
+    </div>
 
-        const initialOrders = [
-            { inv: "#1001", client: "Haroon", car: "HMA 2122", service: "تغيير زيت المحرك والسيفون", technician: "خالد سعيد", amount: 150, status: "completed" },
-            { inv: "#1002", client: "أحمد محمد العتيبي", car: "تويوتا كامري 2022", service: "استبدال فحمات أمامية", technician: "محمد حسن", amount: 300, status: "pending" }
-        ];
+    <!-- 4. المصروفات التشغيلية والإدارية -->
+    <div id="expenses" class="section">
+        <h2>إدارة المصروفات التشغيلية والإدارية</h2>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>نوع المصروف</label>
+                <select id="expCategory">
+                    <option value="تشغيلية (إيجار، كهرباء، صيانة)">تشغيلية (إيجار، كهرباء، صيانة)</option>
+                    <option value="رواتب الموظفين والفنيين">رواتب الموظفين والفنيين</option>
+                    <option value="مصروفات إدارية وبنكية">مصروفات إدارية وبنكية</option>
+                    <option value="تسويق وإعلانات">تسويق وإعلانات</option>
+                    <option value="رسوم حكومية وتراخيص">رسوم حكومية وتراخيص</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>وصف المصروف / المستفيد</label>
+                <input type="text" id="expDesc" placeholder="التفاصيل...">
+            </div>
+            <div class="form-group">
+                <label>المبلغ (ر.س)</label>
+                <input type="number" id="expAmount" placeholder="0.00">
+            </div>
+        </div>
+        <button class="btn" onclick="addExpense()">حفظ المصروف</button>
 
-        const initialParts = [
-            { nameAr: "فلتر زيت هيونداي", nameEn: "Hyundai Oil Filter", price: 35, qty: 15, img: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=100&auto=format&fit=crop&q=60" },
-            { nameAr: "بواجي ليزر نيسان", nameEn: "Nissan Spark Plugs", price: 120, qty: 8, img: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=100&auto=format&fit=crop&q=60" }
-        ];
+        <table style="margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th>التاريخ</th>
+                    <th>البند</th>
+                    <th>الوصف والمستفيد</th>
+                    <th>المبلغ (ر.س)</th>
+                </tr>
+            </thead>
+            <tbody id="expensesTableBody"></tbody>
+        </table>
+    </div>
 
-        function getOrders() { const s = localStorage.getItem('autobiz_orders_v5'); return s ? JSON.parse(s) : initialOrders; }
-        function saveOrders(data) { localStorage.setItem('autobiz_orders_v5', JSON.stringify(data)); updateSystem(); }
+    <!-- 5. التقارير المالية وإيرادات الفنيين -->
+    <div id="reports" class="section">
+        <h2>التقارير المالية وتقرير إيرادات الفنيين الشهري</h2>
+        
+        <h3>أولاً: إيرادات ومبيعات كل فني</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>اسم الفني</th>
+                    <th>عدد الفواتير المنجزة</th>
+                    <th>إجمالي الإيرادات المحصلة (شامل الضريبة)</th>
+                </tr>
+            </thead>
+            <tbody id="technicianReportBody">
+                <!-- تعبئة تلقائية -->
+            </tbody>
+        </table>
 
-        function getParts() { const s = localStorage.getItem('autobiz_parts_v5'); return s ? JSON.parse(s) : initialParts; }
-        function saveParts(data) { localStorage.setItem('autobiz_parts_v5', JSON.stringify(data)); updateSystem(); }
+        <h3 style="margin-top: 30px;">ثانياً: الملخص المالي العام والشهرية</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>البند المالي</th>
+                    <th>القيمة الإجمالية (ر.س)</th>
+                </tr>
+            </thead>
+            <tbody id="financialSummaryBody">
+                <!-- تعبئة تلقائية -->
+            </tbody>
+        </table>
+        <button class="btn btn-print no-print" style="margin-top: 15px;" onclick="window.print()">طباعة التقارير المالية</button>
+    </div>
 
-        function updateSystem() {
-            const orders = getOrders();
-            const parts = getParts();
-            const curr = i18n[currentLang].currency;
+</div>
 
-            let totalSales = 0;
-            let totalDebts = 0;
-            orders.forEach(o => {
-                totalSales += Number(o.amount);
-                if (o.status === 'pending') totalDebts += Number(o.amount);
-            });
+<script>
+    let data = {
+        invoices: [],
+        purchases: [],
+        expenses: []
+    };
 
-            let totalPartsQty = parts.reduce((sum, p) => sum + Number(p.qty), 0);
+    document.getElementById('currentDate').innerText = new Date().toLocaleDateString('ar-SA');
 
-            document.getElementById('stat-services-val').innerText = orders.length;
-            document.getElementById('stat-parts-val').innerText = totalPartsQty;
-            document.getElementById('stat-debts-val').innerText = totalDebts + " " + curr;
-            document.getElementById('stat-sales-val').innerText = totalSales + " " + curr;
+    function switchTab(tabId) {
+        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+        if(tabId === 'reports') updateReports();
+    }
 
-            renderOrders(orders);
-            renderParts(parts);
-            renderDebts(orders);
+    function addInvoice() {
+        const client = document.getElementById('invClient').value;
+        const technician = document.getElementById('invTechnician').value;
+        const amount = parseFloat(document.getElementById('invAmount').value) || 0;
+        const taxRate = parseFloat(document.getElementById('invTaxRate').value);
+
+        if(!client || amount <= 0) {
+            alert('الرجاء إدخال اسم العميل والمبلغ بشكل صحيح');
+            return;
         }
 
-        function renderOrders(orders) {
-            const tbody = document.getElementById('orders-tbody');
-            tbody.innerHTML = '';
-            const curr = i18n[currentLang].currency;
-            orders.forEach(item => {
-                const tr = document.createElement('tr');
-                const statusText = item.status === 'completed' ? i18n[currentLang].statusCompleted : i18n[currentLang].statusPending;
-                const statusClass = item.status === 'completed' ? 'completed' : 'pending';
-                tr.innerHTML = `<td>${item.inv}</td><td>${item.client}</td><td>${item.car}</td><td>${item.service}</td><td>${item.technician || '-'}</td><td>${item.amount} ${curr}</td><td><span class="badge ${statusClass}">${statusText}</span></td>`;
-                tbody.appendChild(tr);
-            });
-        }
+        const tax = amount * taxRate;
+        const total = amount + tax;
 
-        function renderParts(parts) {
-            const tbody = document.getElementById('parts-tbody');
-            tbody.innerHTML = '';
-            const curr = i18n[currentLang].currency;
-            parts.forEach(p => {
-                const tr = document.createElement('tr');
-                const imgUrl = p.img || 'https://via.placeholder.com/100';
-                tr.innerHTML = `<td><img src="${imgUrl}" class="part-img"></td><td>${p.nameAr}</td><td>${p.nameEn}</td><td>${p.price} ${curr}</td><td>${p.qty}</td>`;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function renderDebts(orders) {
-            const tbody = document.getElementById('debts-tbody');
-            tbody.innerHTML = '';
-            const pendingOrders = orders.filter(o => o.status === 'pending');
-            const curr = i18n[currentLang].currency;
-
-            pendingOrders.forEach((item) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${item.inv}</td><td>${item.client}</td><td>${item.amount} ${curr}</td><td><button class="btn-success" onclick="payDebt('${item.inv}')">${i18n[currentLang].btnPay}</button></td>`;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function payDebt(inv) {
-            let orders = getOrders();
-            let target = orders.find(o => o.inv === inv);
-            if (target) {
-                target.status = 'completed';
-                saveOrders(orders);
-            }
-        }
-
-        function switchTab(tab, el) {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-            document.querySelectorAll('.section-page').forEach(s => s.classList.remove('active'));
-
-            if (tab === 'dashboard' || tab === 'orders') document.getElementById('sec-orders').classList.add('active');
-            else if (tab === 'parts') document.getElementById('sec-parts').classList.add('active');
-            else if (tab === 'debts') document.getElementById('sec-debts').classList.add('active');
-        }
-
-        function openOrderModal() { document.getElementById('orderModal').style.display = 'flex'; }
-        function openPartModal() { document.getElementById('partModal').style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        document.getElementById('orderForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const newOrder = {
-                inv: document.getElementById('inputInv').value,
-                client: document.getElementById('inputClient').value,
-                car: document.getElementById('inputCar').value,
-                service: document.getElementById('inputService').value,
-                technician: document.getElementById('inputTechnician').value,
-                amount: document.getElementById('inputAmount').value,
-                status: document.getElementById('selectStatus').value
-            };
-            const orders = getOrders();
-            orders.unshift(newOrder);
-            saveOrders(orders);
-            closeModal('orderModal');
-            this.reset();
+        data.invoices.push({
+            id: 'INV-' + (1000 + data.invoices.length + 1),
+            date: new Date().toLocaleDateString('ar-SA'),
+            client,
+            technician,
+            amount,
+            tax,
+            total
         });
 
-        document.getElementById('partForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const newPart = {
-                nameAr: document.getElementById('inputPartAr').value,
-                nameEn: document.getElementById('inputPartEn').value,
-                price: document.getElementById('inputPartPrice').value,
-                qty: document.getElementById('inputPartQty').value,
-                img: document.getElementById('inputPartImg').value
-            };
-            const parts = getParts();
-            parts.unshift(newPart);
-            saveParts(parts);
-            closeModal('partModal');
-            this.reset();
-        });
+        document.getElementById('invClient').value = '';
+        document.getElementById('invAmount').value = '';
+        updateDashboard();
+        alert('تم حفظ الفاتورة بنجاح!');
+    }
 
-        function toggleLanguage() {
-            currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-            document.getElementById('lang-toggle-btn').innerText = i18n[currentLang].langBtn;
+    function addPurchase() {
+        const name = document.getElementById('partName').value;
+        const supplier = document.getElementById('partSupplier').value;
+        const cost = parseFloat(document.getElementById('partCost').value) || 0;
 
-            const t = i18n[currentLang];
-            document.getElementById('sub-title').innerText = t.subTitle;
-            document.getElementById('nav-dashboard').innerText = t.navDashboard;
-            document.getElementById('nav-orders').innerText = t.navOrders;
-            document.getElementById('nav-parts').innerText = t.navParts;
-            document.getElementById('nav-debts').innerText = t.navDebts;
-
-            document.getElementById('stat-services-label').innerText = t.statServices;
-            document.getElementById('stat-parts-label').innerText = t.statParts;
-            document.getElementById('stat-debts-label').innerText = t.statDebts;
-            document.getElementById('stat-sales-label').innerText = t.statSales;
-
-            document.getElementById('page-title-orders').innerText = t.pageTitleOrders;
-            document.getElementById('page-title-parts').innerText = t.pageTitleParts;
-            document.getElementById('page-title-debts').innerText = t.pageTitleDebts;
-
-            document.getElementById('btn-add-order').innerText = t.btnAddOrder;
-            document.getElementById('btn-add-part').innerText = t.btnAddPart;
-
-            document.getElementById('th-inv').innerText = t.thInv;
-            document.getElementById('th-client').innerText = t.thClient;
-            document.getElementById('th-car').innerText = t.thCar;
-            document.getElementById('th-service').innerText = t.thService;
-            document.getElementById('th-technician').innerText = t.thTechnician;
-            document.getElementById('th-amount').innerText = t.thAmount;
-            document.getElementById('th-status').innerText = t.thStatus;
-
-            document.getElementById('th-part-img').innerText = t.thPartImg;
-            document.getElementById('th-part-ar').innerText = t.thPartAr;
-            document.getElementById('th-part-en').innerText = t.thPartEn;
-            document.getElementById('th-part-price').innerText = t.thPartPrice;
-            document.getElementById('th-part-qty').innerText = t.thPartQty;
-
-            document.getElementById('th-debt-inv').innerText = t.thDebtInv;
-            document.getElementById('th-debt-client').innerText = t.thDebtClient;
-            document.getElementById('th-debt-amount').innerText = t.thDebtAmount;
-            document.getElementById('th-debt-action').innerText = t.thDebtAction;
-
-            document.getElementById('modal-order-heading').innerText = t.modalOrderHeading;
-            document.getElementById('modal-part-heading').innerText = t.modalPartHeading;
-
-            document.getElementById('lbl-inv').innerText = t.lblInv;
-            document.getElementById('lbl-client').innerText = t.lblClient;
-            document.getElementById('lbl-car').innerText = t.lblCar;
-            document.getElementById('lbl-service').innerText = t.lblService;
-            document.getElementById('lbl-technician').innerText = t.lblTechnician;
-            document.getElementById('lbl-amount').innerText = t.lblAmount;
-            document.getElementById('lbl-status').innerText = t.lblStatus;
-
-            document.getElementById('lbl-part-ar').innerText = t.lblPartAr;
-            document.getElementById('lbl-part-en').innerText = t.lblPartEn;
-            document.getElementById('lbl-part-price').innerText = t.lblPartPrice;
-            document.getElementById('lbl-part-qty').innerText = t.lblPartQty;
-            document.getElementById('lbl-part-img').innerText = t.lblPartImg;
-
-            document.getElementById('opt-completed').innerText = t.optCompleted;
-            document.getElementById('opt-pending').innerText = t.optPending;
-
-            document.getElementById('btn-cancel-1').innerText = t.btnCancel;
-            document.getElementById('btn-cancel-2').innerText = t.btnCancel;
-            document.getElementById('btn-save-1').innerText = t.btnSaveOrder;
-            document.getElementById('btn-save-2').innerText = t.btnSavePart;
-
-            updateSystem();
+        if(!name || cost <= 0) {
+            alert('الرجاء إدخال بيانات القطعة والتكلفة');
+            return;
         }
 
-        // Initial Load
-        updateSystem();
-    </script>
+        data.purchases.push({
+            date: new Date().toLocaleDateString('ar-SA'),
+            name,
+            supplier,
+            cost
+        });
+
+        document.getElementById('partName').value = '';
+        document.getElementById('partSupplier').value = '';
+        document.getElementById('partCost').value = '';
+        updateDashboard();
+        alert('تم تسجيل مشتريات قطع الغيار بنجاح!');
+    }
+
+    function addExpense() {
+        const category = document.getElementById('expCategory').value;
+        const desc = document.getElementById('expDesc').value;
+        const amount = parseFloat(document.getElementById('expAmount').value) || 0;
+
+        if(amount <= 0) {
+            alert('الرجاء إدخال مبلغ المصروف');
+            return;
+        }
+
+        data.expenses.push({
+            date: new Date().toLocaleDateString('ar-SA'),
+            category,
+            desc,
+            amount
+        });
+
+        document.getElementById('expDesc').value = '';
+        document.getElementById('expAmount').value = '';
+        updateDashboard();
+        alert('تم حفظ المصروف بنجاح!');
+    }
+
+    function updateDashboard() {
+        let totalSales = 0;
+        let totalTax = 0;
+        let invRows = '';
+
+        data.invoices.forEach(inv => {
+            totalSales += inv.amount;
+            totalTax += inv.tax;
+            invRows += `<tr>
+                <td>${inv.id}</td>
+                <td>${inv.date}</td>
+                <td>${inv.client}</td>
+                <td>${inv.technician}</td>
+                <td>${inv.amount.toFixed(2)}</td>
+                <td>${inv.tax.toFixed(2)}</td>
+                <td>${inv.total.toFixed(2)}</td>
+            </tr>`;
+        });
+        document.getElementById('invoicesTableBody').innerHTML = invRows;
+        document.getElementById('statSales').innerText = totalSales.toFixed(2) + ' ر.س';
+        document.getElementById('statTax').innerText = totalTax.toFixed(2) + ' ر.س';
+
+        let totalPurchases = 0;
+        let purRows = '';
+        data.purchases.forEach(p => {
+            totalPurchases += p.cost;
+            purRows += `<tr><td>${p.date}</td><td>${p.name}</td><td>${p.supplier}</td><td>${p.cost.toFixed(2)}</td></tr>`;
+        });
+        document.getElementById('purchasesTableBody').innerHTML = purRows;
+        document.getElementById('statPurchases').innerText = totalPurchases.toFixed(2) + ' ر.س';
+
+        let totalExpenses = 0;
+        let expRows = '';
+        data.expenses.forEach(e => {
+            totalExpenses += e.amount;
+            expRows += `<tr><td>${e.date}</td><td>${e.category}</td><td>${e.desc}</td><td>${e.amount.toFixed(2)}</td></tr>`;
+        });
+        document.getElementById('expensesTableBody').innerHTML = expRows;
+        document.getElementById('statExpenses').innerText = totalExpenses.toFixed(2) + ' ر.س';
+    }
+
+    function updateReports() {
+        let techMap = {};
+        data.invoices.forEach(inv => {
+            if(!techMap[inv.technician]) {
+                techMap[inv.technician] = { count: 0, total: 0 };
+            }
+            techMap[inv.technician].count += 1;
+            techMap[inv.technician].total += inv.total;
+        });
+
+        let techRows = '';
+        for(let tech in techMap) {
+            techRows += `<tr>
+                <td>${tech}</td>
+                <td>${techMap[tech].count}</td>
+                <td>${techMap[tech].total.toFixed(2)} ر.س</td>
+            </tr>`;
+        }
+        document.getElementById('technicianReportBody').innerHTML = techRows || '<tr><td colspan="3">لا توجد بيانات مسجلة بعد</td></tr>';
+
+        let totalSales = data.invoices.reduce((sum, i) => sum + i.amount, 0);
+        let totalTax = data.invoices.reduce((sum, i) => sum + i.tax, 0);
+        let totalPurchases = data.purchases.reduce((sum, p) => sum + p.cost, 0);
+        let totalExpenses = data.expenses.reduce((sum, e) => sum + e.amount, 0);
+        let netProfit = totalSales - totalPurchases - totalExpenses;
+
+        let summaryRows = `
+            <tr><td>إجمالي المبيعات (صافي)</td><td>${totalSales.toFixed(2)} ر.س</td></tr>
+            <tr><td>إجمالي ضريبة القيمة المحصلة</td><td>${totalTax.toFixed(2)} ر.س</td></tr>
+            <tr><td>إجمالي مشتريات قطع الغيار</td><td>${totalPurchases.toFixed(2)} ر.س</td></tr>
+            <tr><td>إجمالي المصروفات التشغيلية والإدارية</td><td>${totalExpenses.toFixed(2)} ر.س</td></tr>
+            <tr style="font-weight: bold; background: #e2e8f0;"><td>صافي الربح التقديري</td><td>${netProfit.toFixed(2)} ر.س</td></tr>
+        `;
+        document.getElementById('financialSummaryBody').innerHTML = summaryRows;
+    }
+</script>
+
 </body>
 </html>
